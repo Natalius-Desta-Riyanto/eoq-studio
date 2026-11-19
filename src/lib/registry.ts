@@ -13,7 +13,6 @@ import { solveMulti, type MultiInput } from './models/multi';
 export interface ModelMeta {
   kind: ModelKind;
   path: string;
-  section: string;
   name: string;
   short: string;
   description: string;
@@ -23,7 +22,7 @@ export interface ModelMeta {
 
 export const MODELS: ModelMeta[] = [
   {
-    kind: 'basic', path: '/model/eoq-dasar', section: '15.1–15.2', name: 'EOQ Dasar', short: 'EOQ',
+    kind: 'basic', path: '/model/eoq-dasar', name: 'EOQ Dasar', short: 'EOQ',
     description: 'Kuantitas pesanan ekonomis, siklus, biaya, reorder point, dan sensitivitas.',
     icon: Calculator,
     metrics: (i: BasicInput) => {
@@ -43,7 +42,7 @@ export const MODELS: ModelMeta[] = [
     },
   },
   {
-    kind: 'discount', path: '/model/diskon-kuantitas', section: '15.3', name: 'Diskon Kuantitas', short: 'Diskon',
+    kind: 'discount', path: '/model/diskon-kuantitas', name: 'Diskon Kuantitas', short: 'Diskon',
     description: 'Harga bertingkat (all-units discount) dengan algoritma kandidat titik putus.',
     icon: Tags,
     metrics: (i: DiscountInput) => {
@@ -57,7 +56,7 @@ export const MODELS: ModelMeta[] = [
     },
   },
   {
-    kind: 'continuous', path: '/model/laju-kontinu', section: '15.4', name: 'EOQ Laju Kontinu', short: 'Produksi',
+    kind: 'continuous', path: '/model/laju-kontinu', name: 'EOQ Laju Kontinu', short: 'Produksi',
     description: 'Ukuran production run optimal ketika barang diproduksi bertahap dengan laju r.',
     icon: Factory,
     metrics: (i: ContinuousInput) => {
@@ -71,7 +70,7 @@ export const MODELS: ModelMeta[] = [
     },
   },
   {
-    kind: 'backorder', path: '/model/back-order', section: '15.5', name: 'EOQ dengan Back Order', short: 'Back order',
+    kind: 'backorder', path: '/model/back-order', name: 'EOQ dengan Back Order', short: 'Back order',
     description: 'Kekurangan diizinkan: ukuran pesanan, persediaan maksimum, dan kekurangan maksimum.',
     icon: PackageMinus,
     metrics: (i: BackorderInput) => {
@@ -85,8 +84,8 @@ export const MODELS: ModelMeta[] = [
     },
   },
   {
-    kind: 'validity', path: '/model/validitas', section: '15.6', name: 'Validitas EOQ', short: 'Validitas',
-    description: 'Uji koefisien variabilitas Peterson & Silver untuk asumsi permintaan konstan.',
+    kind: 'validity', path: '/model/validitas', name: 'Validitas EOQ', short: 'Validitas',
+    description: 'Uji koefisien variabilitas untuk memeriksa asumsi permintaan konstan.',
     icon: Activity,
     metrics: (i: ValidityInput) => {
       const r = solveValidity(i);
@@ -99,7 +98,7 @@ export const MODELS: ModelMeta[] = [
     },
   },
   {
-    kind: 'multi', path: '/model/multi-produk', section: '15.7', name: 'Multi-Produk', short: 'Multi',
+    kind: 'multi', path: '/model/multi-produk', name: 'Multi-Produk', short: 'Multi',
     description: 'Koordinasi pesanan gabungan beberapa produk dari satu pemasok.',
     icon: Boxes,
     metrics: (i: MultiInput) => {

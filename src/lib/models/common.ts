@@ -1,4 +1,4 @@
-// Tipe & utilitas bersama untuk seluruh model EOQ deterministik (Winston, Bab 15)
+// Tipe & utilitas bersama untuk seluruh model EOQ deterministik (Winston, 2004)
 
 export type ModelKind = 'basic' | 'discount' | 'continuous' | 'backorder' | 'validity' | 'multi';
 

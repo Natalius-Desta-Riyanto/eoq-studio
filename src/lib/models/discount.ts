@@ -1,4 +1,4 @@
-// 15.3 Model diskon kuantitas (all-units discount)
+// Model diskon kuantitas (all-units discount)
 import { linspace, requirePos, type FieldErrors, type Step, type TexFmt } from './common';
 
 export interface PriceTier { min: number; price: number }

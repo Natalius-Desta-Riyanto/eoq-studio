@@ -1,4 +1,4 @@
-// 15.7 Pemesanan multi-produk dengan biaya pengiriman gabungan
+// Pemesanan multi-produk dengan biaya pengiriman gabungan
 import { requirePos, type FieldErrors, type Step, type TexFmt } from './common';
 
 export interface Product {

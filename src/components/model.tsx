@@ -96,7 +96,6 @@ export function ModelHeader<I>({ kind, presets, onPreset, onReset, source }: {
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <h1 className="text-lg font-semibold tracking-tight sm:text-xl">{meta.name}</h1>
-            <Badge tone="blue">Subbab {meta.section}</Badge>
             {source?.type === 'history' && <Badge tone="green">Dari riwayat: {source.title}</Badge>}
             {source?.type === 'preset' && <Badge tone="amber">{source.name}</Badge>}
           </div>

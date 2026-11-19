@@ -1,4 +1,4 @@
-// 15.5 Model EOQ dengan back order (kekurangan diizinkan)
+// Model EOQ dengan back order (kekurangan diizinkan)
 import {
   effectiveHolding, requirePos, type FieldErrors, type HoldingMode, type Step, type TexFmt,
 } from './common';

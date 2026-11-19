@@ -1,4 +1,4 @@
-// Verifikasi solver terhadap contoh-contoh pada materi (Winston Bab 15)
+// Verifikasi solver terhadap contoh-contoh pada materi (Winston, 2004)
 import { describe, expect, it } from 'vitest';
 import { solveBasic, basicDefaults } from './basic';
 import { solveDiscount, discountDefaults } from './discount';

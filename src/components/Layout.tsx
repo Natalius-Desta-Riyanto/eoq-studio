@@ -1,12 +1,14 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
-import { BookOpen, GitCompareArrows, History, LayoutDashboard, Menu, Monitor, Moon, Settings, Sun, X, CircleCheck, CircleAlert, Info } from 'lucide-react';
+import { ArrowRight, BookOpen, GitCompareArrows, Library, History, LayoutDashboard, Menu, Monitor, Moon, Settings, Sun, X, CircleCheck, CircleAlert, Info } from 'lucide-react';
 import { MODELS } from '@/lib/registry';
 import { applyTheme, useSettings, type Theme } from '@/store/settings';
 import { useHistory } from '@/store/history';
 import { useToast } from '@/store/toast';
 import { seedOnFirstRun } from '@/data/seed';
+import { PRIMARY_REFERENCE } from '@/data/references';
+import { Citation } from '@/components/Citation';
 
 function Logo() {
   return (
@@ -14,10 +16,7 @@ function Logo() {
       <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600 shadow-sm shadow-brand-600/40">
         <svg viewBox="0 0 32 32" className="h-5 w-5" aria-hidden><path d="M5 8v16l7-8v8l7-8v8l7-8" stroke="white" strokeWidth="2.6" fill="none" strokeLinejoin="round" strokeLinecap="round" /></svg>
       </div>
-      <div className="leading-tight">
-        <p className="text-[15px] font-semibold tracking-tight text-slate-900 dark:text-white">EOQ Studio</p>
-        <p className="text-[11px] text-slate-500 dark:text-slate-400">Riset Operasi · Bab 15</p>
-      </div>
+      <p className="text-[15px] font-semibold tracking-tight text-slate-900 dark:text-white">EOQ Studio</p>
     </div>
   );
 }
@@ -49,8 +48,7 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         <p className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Model</p>
         <div className="space-y-1">
           {MODELS.map((m) => (
-            <NavItem key={m.kind} to={m.path} icon={<m.icon className="h-[18px] w-[18px]" />}
-              badge={<span className="text-[10.5px] font-medium text-slate-400 group-hover:text-slate-500">{m.section}</span>}>
+            <NavItem key={m.kind} to={m.path} icon={<m.icon className="h-[18px] w-[18px]" />}>
               {m.name}
             </NavItem>
           ))}
@@ -73,9 +71,15 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
           <NavItem to="/pengaturan" icon={<Settings className="h-[18px] w-[18px]" />}>Pengaturan</NavItem>
         </div>
       </div>
-      <div className="mt-auto rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
-        Berdasarkan Winston, <i>Operations Research: Applications and Algorithms</i>, Bab 15 — Deterministic EOQ Inventory Models.
-      </div>
+      <figure className="mt-auto rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-900">
+        <figcaption className="mb-1.5 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+          <Library className="h-3.5 w-3.5" /> Referensi utama
+        </figcaption>
+        <p className="pl-4 -indent-4 text-xs leading-relaxed text-slate-600 dark:text-slate-300"><Citation r={PRIMARY_REFERENCE} /></p>
+        <NavLink to="/materi#referensi" className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-brand-600 hover:underline dark:text-brand-400">
+          Daftar pustaka lengkap <ArrowRight className="h-3 w-3" />
+        </NavLink>
+      </figure>
     </nav>
   );
 }

@@ -1,4 +1,4 @@
-// 15.1–15.2 Model EOQ Dasar (+ reorder point untuk lead time > 0)
+// Model EOQ Dasar (+ reorder point untuk lead time > 0)
 import {
   convertDuration, effectiveHolding, linspace, realMod, requireNonNeg, requirePos,
   type FieldErrors, type HoldingMode, type Period, type Step, type TexFmt,

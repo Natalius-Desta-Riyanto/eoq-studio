@@ -1,4 +1,4 @@
-// 15.4 Model EOQ laju kontinu (production lot size / EPQ)
+// Model EOQ laju kontinu (production lot size / EPQ)
 import {
   effectiveHolding, linspace, requirePos, requireNonNeg,
   type FieldErrors, type HoldingMode, type Step, type TexFmt,

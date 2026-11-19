@@ -59,7 +59,7 @@ export default function SettingsPage() {
 
       <Card title="Tentang">
         <div className="space-y-1.5 text-sm text-slate-600 dark:text-slate-300">
-          <p><b>EOQ Studio</b> v1.0 — aplikasi pendukung materi Riset Operasi Bab 15 (Deterministic EOQ Inventory Models).</p>
+          <p><b>EOQ Studio</b> v1.0 — aplikasi pendukung materi model persediaan EOQ deterministik.</p>
           <p>Dibangun dengan React, TypeScript, Vite, Tailwind CSS, Recharts, KaTeX, dan Zustand. Semua perhitungan berjalan di browser; tidak ada data yang dikirim ke server.</p>
           <p className="text-slate-500">Solver diverifikasi terhadap Contoh 1–7 pada materi melalui unit test (<code className="kbd">npm test</code>).</p>
         </div>

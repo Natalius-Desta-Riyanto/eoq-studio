@@ -68,17 +68,14 @@ export default function Dashboard() {
       <section>
         <div className="mb-3 flex items-end justify-between">
           <h2 className="text-base font-semibold">Model persediaan</h2>
-          <span className="text-xs text-slate-500">6 model · Subbab 15.1–15.7</span>
+          <span className="text-xs text-slate-500">{MODELS.length} model</span>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {MODELS.map((m) => {
             const n = stats.byModel.find((x) => x.kind === m.kind)?.count ?? 0;
             return (
               <Link key={m.kind} to={m.path} className="card group flex flex-col p-5 transition hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-md dark:hover:border-brand-700">
-                <div className="flex items-start justify-between">
-                  <div className="rounded-lg bg-brand-50 p-2 text-brand-600 ring-1 ring-inset ring-brand-100 dark:bg-brand-950 dark:text-brand-300 dark:ring-brand-900"><m.icon className="h-5 w-5" /></div>
-                  <span className="text-xs font-medium text-slate-400">Subbab {m.section}</span>
-                </div>
+                <div className="w-fit rounded-lg bg-brand-50 p-2 text-brand-600 ring-1 ring-inset ring-brand-100 dark:bg-brand-950 dark:text-brand-300 dark:ring-brand-900"><m.icon className="h-5 w-5" /></div>
                 <p className="mt-4 font-semibold">{m.name}</p>
                 <p className="mt-1 flex-1 text-sm leading-relaxed text-slate-500 dark:text-slate-400">{m.description}</p>
                 <div className="mt-4 flex items-center justify-between text-xs">
@@ -129,7 +126,7 @@ export default function Dashboard() {
                     <p className="truncate text-sm font-medium">{p.name}</p>
                     <p className="truncate text-xs text-slate-500">{p.description}</p>
                   </div>
-                  <span className="shrink-0 text-[11px] text-slate-400">{m.section}</span>
+                  <span className="shrink-0 text-[11px] text-slate-400">{m.short}</span>
                 </Link>
               </li>
             ))}

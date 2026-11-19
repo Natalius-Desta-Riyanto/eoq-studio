@@ -1,4 +1,4 @@
-// 15.6 Validitas asumsi EOQ — koefisien variabilitas Peterson & Silver (1998)
+// Validitas asumsi EOQ — koefisien variabilitas Silver, Pyke & Peterson (1998)
 import { type FieldErrors, type Step, type TexFmt } from './common';
 
 export interface ValidityInput {

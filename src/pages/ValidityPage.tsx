@@ -40,7 +40,7 @@ export default function ValidityPage() {
               : <p className="-mt-2 text-xs text-slate-500">{i.demands.length} periode terbaca. Bisa ditempel langsung dari Excel.</p>}
             <TextField label="Nama periode" value={i.periodLabel} onChange={(v) => patch({ periodLabel: v })} placeholder="Kuartal, Bulan, Minggu…" />
             <NumberField label="Ambang batas" symbol="FC" value={i.threshold} onChange={(v) => patch({ threshold: v })} error={errors.threshold} step={0.05}
-              hint="Peterson & Silver (1998) menyarankan 0,20." />
+              hint="Ambang yang disarankan Silver, Pyke, dan Peterson (1998) adalah 0,20." />
           </InputCard>
         }
         results={!r ? <InvalidState errors={errors} /> : (
@@ -138,7 +138,7 @@ export default function ValidityPage() {
                       { label: 'Keputusan', value: r.valid ? 'EOQ layak' : 'EOQ tidak layak', strong: true },
                     ]} />
                   </div>
-                  <Callout className="mt-4" tone="info">FC adalah kuadrat koefisien variasi (σ/d̄)². Varians memakai pembagi n sesuai prosedur Peterson & Silver pada materi.</Callout>
+                  <Callout className="mt-4" tone="info">FC adalah kuadrat koefisien variasi (σ/d̄)². Varians memakai pembagi n sesuai prosedur Silver, Pyke, dan Peterson (1998) pada materi.</Callout>
                 </Card>
               </div>
             )}
