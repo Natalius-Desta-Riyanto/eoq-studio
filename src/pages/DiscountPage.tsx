@@ -87,7 +87,7 @@ export default function DiscountPage() {
             <Tabs<Tab> value={tab} onChange={setTab} tabs={[
               { value: 'summary', label: 'Ringkasan', icon: <Sigma className="h-4 w-4" /> },
               { value: 'charts', label: 'Grafik', icon: <ChartLine className="h-4 w-4" /> },
-              { value: 'steps', label: 'Langkah penyelesaian', icon: <ListOrdered className="h-4 w-4" /> },
+              { value: 'steps', label: 'Langkah penyelesaian', short: 'Langkah', icon: <ListOrdered className="h-4 w-4" /> },
             ]} />
 
             {tab === 'summary' && (
@@ -133,7 +133,7 @@ export default function DiscountPage() {
                     </table>
                   </div>
                 </Card>
-                <div className="grid gap-6 lg:grid-cols-2">
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                   <Card title="Kebijakan optimal">
                     <KV rows={[
                       { label: 'Ukuran pesanan', value: `${f.num(r.best.q)} unit`, strong: true },

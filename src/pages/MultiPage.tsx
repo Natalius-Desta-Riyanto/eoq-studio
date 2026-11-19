@@ -102,7 +102,7 @@ export default function MultiPage() {
             <Tabs<Tab> value={tab} onChange={setTab} tabs={[
               { value: 'summary', label: 'Ringkasan', icon: <Sigma className="h-4 w-4" /> },
               { value: 'charts', label: 'Grafik', icon: <ChartLine className="h-4 w-4" /> },
-              { value: 'steps', label: 'Langkah penyelesaian', icon: <ListOrdered className="h-4 w-4" /> },
+              { value: 'steps', label: 'Langkah penyelesaian', short: 'Langkah', icon: <ListOrdered className="h-4 w-4" /> },
             ]} />
 
             {tab === 'summary' && (
@@ -153,7 +153,7 @@ export default function MultiPage() {
             )}
 
             {tab === 'charts' && (
-              <div className="grid gap-6 lg:grid-cols-2">
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <Card title="Total biaya terhadap frekuensi pengiriman" subtitle={`Pengali tetap ${r.plan.m.join(' : ')}`} className="lg:col-span-2">
                   <CurveChart data={r.curve} x="n" xLabel="Pengiriman per tahun n" optimum={{ x: r.plan.n, y: r.plan.total, label: 'n' }}
                     series={[{ key: 'total', label: 'Total', width: 2.5 }, { key: 'ordering', label: 'Biaya pesan (truk + produk)' }, { key: 'holding', label: 'Biaya simpan' }]} />

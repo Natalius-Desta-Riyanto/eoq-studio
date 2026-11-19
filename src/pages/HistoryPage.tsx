@@ -74,7 +74,7 @@ export default function HistoryPage() {
           <h1 className="text-xl font-semibold tracking-tight">Riwayat perhitungan</h1>
           <p className="mt-1 text-sm text-slate-500">Semua analisis tersimpan secara lokal di browser ini. Ekspor JSON untuk cadangan atau berpindah perangkat.</p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-wrap">
           <input ref={fileRef} type="file" accept="application/json,.json" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) onImport(f); e.target.value = ''; }} />
           <button className="btn-secondary" title="Tambahkan kembali contoh soal PPT yang belum ada di riwayat"
             onClick={() => { const n = seedExamples(); toast(n ? `${n} contoh soal PPT ditambahkan ke riwayat.` : 'Semua contoh soal PPT sudah ada di riwayat.', n ? 'success' : 'info'); }}>
@@ -87,17 +87,17 @@ export default function HistoryPage() {
       </div>
 
       <Card bodyClass="p-0">
-        <div className="flex flex-wrap items-center gap-3 border-b border-slate-100 p-4 dark:border-slate-800">
-          <div className="relative min-w-[220px] flex-1">
+        <div className="flex flex-wrap items-center gap-2 border-b border-slate-100 p-3 dark:border-slate-800 sm:gap-3 sm:p-4">
+          <div className="relative w-full sm:w-auto sm:min-w-[220px] sm:flex-1">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <input className="input pl-9" placeholder="Cari judul, catatan, atau model…" value={q} onChange={(e) => setQ(e.target.value)} />
           </div>
-          <SelectField<'all' | ModelKind> value={kind} onChange={setKind} className="w-48"
+          <SelectField<'all' | ModelKind> value={kind} onChange={setKind} className="min-w-0 flex-1 sm:w-48 sm:flex-none"
             options={[{ value: 'all', label: 'Semua model' }, ...MODELS.map((m) => ({ value: m.kind, label: m.name }))]} />
-          <SelectField<Sort> value={sort} onChange={setSort} className="w-40"
+          <SelectField<Sort> value={sort} onChange={setSort} className="min-w-0 flex-1 sm:w-40 sm:flex-none"
             options={[{ value: 'new', label: 'Terbaru' }, { value: 'old', label: 'Terlama' }, { value: 'title', label: 'Judul A–Z' }]} />
           <button className={clsx('btn-secondary', starOnly && '!border-amber-300 !bg-amber-50 !text-amber-800 dark:!bg-amber-950/40 dark:!text-amber-300')} onClick={() => setStarOnly((s) => !s)}>
-            <Star className={clsx('h-4 w-4', starOnly && 'fill-amber-400 text-amber-400')} /> Favorit
+            <Star className={clsx('h-4 w-4', starOnly && 'fill-amber-400 text-amber-400')} /><span className="hidden sm:inline">Favorit</span>
           </button>
         </div>
 
@@ -118,7 +118,40 @@ export default function HistoryPage() {
             {entries.length ? 'Ubah kata kunci atau filter.' : 'Tekan tombol Simpan di halaman model untuk menyimpan hasil perhitungan.'}
           </Empty>
         ) : (
-          <div className="overflow-x-auto">
+          <>
+          <ul className="divide-y divide-slate-100 dark:divide-slate-800 lg:hidden">
+            {list.map((e) => {
+              const meta = modelByKind(e.kind);
+              return (
+                <li key={e.id} className={clsx('flex gap-3 px-3 py-3', sel.includes(e.id) && 'bg-brand-50/40 dark:bg-brand-950/20')}>
+                  <input type="checkbox" className="mt-1 shrink-0" checked={sel.includes(e.id)} onChange={() => toggle(e.id)} aria-label={`Pilih ${e.title}`} />
+                  <div className="min-w-0 flex-1">
+                    <button className="text-left text-[15px] font-medium leading-snug text-slate-900 dark:text-white" onClick={() => nav(`${meta.path}?h=${e.id}`)}>{e.title}</button>
+                    <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                      <Badge tone="blue"><meta.icon className="h-3 w-3" />{meta.short}</Badge>
+                      {SEED_IDS.includes(e.id) && <Badge tone="amber">PPT</Badge>}
+                      <span className="text-xs text-slate-400">{relativeTime(e.createdAt)}</span>
+                    </div>
+                    <dl className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 rounded-lg bg-slate-50 px-3 py-2 text-xs dark:bg-slate-950/50">
+                      {e.metrics.slice(0, 4).map((m) => (
+                        <div key={m.key} className="min-w-0">
+                          <dt className="truncate text-slate-400">{m.label}</dt>
+                          <dd className="truncate font-medium tabular-nums"><MetricValue m={m} /></dd>
+                        </div>
+                      ))}
+                    </dl>
+                    <div className="-ml-2 mt-1.5 flex gap-0.5">
+                      <button className="btn-ghost btn-sm px-2" onClick={() => toggleStar(e.id)} aria-label="Favorit"><Star className={clsx('h-4 w-4', e.starred && 'fill-amber-400 text-amber-400')} /></button>
+                      <button className="btn-ghost btn-sm px-2" onClick={() => { setEditing(e); setDraft({ title: e.title, note: e.note }); }} aria-label="Ubah"><Pencil className="h-4 w-4" /></button>
+                      <button className="btn-ghost btn-sm px-2 hover:!text-red-600" onClick={() => setConfirm([e.id])} aria-label="Hapus"><Trash2 className="h-4 w-4" /></button>
+                      <button className="btn-ghost btn-sm ml-auto text-brand-600 dark:text-brand-400" onClick={() => nav(`${meta.path}?h=${e.id}`)}>Buka <ExternalLink className="h-3.5 w-3.5" /></button>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+          <div className="hidden overflow-x-auto lg:block">
             <table className="table-base">
               <thead>
                 <tr>
@@ -160,6 +193,7 @@ export default function HistoryPage() {
               </tbody>
             </table>
           </div>
+          </>
         )}
       </Card>
 

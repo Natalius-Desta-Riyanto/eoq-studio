@@ -70,7 +70,7 @@ export default function Dashboard() {
           <h2 className="text-base font-semibold">Model persediaan</h2>
           <span className="text-xs text-slate-500">6 model · Subbab 15.1–15.7</span>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {MODELS.map((m) => {
             const n = stats.byModel.find((x) => x.kind === m.kind)?.count ?? 0;
             return (
@@ -91,7 +91,7 @@ export default function Dashboard() {
         </div>
       </section>
 
-      <section className="grid items-start gap-6 xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+      <section className="grid grid-cols-1 items-start gap-6 xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
         <Card title="Analisis terbaru" actions={<Link to="/riwayat" className="btn-ghost btn-sm">Lihat semua <ArrowRight className="h-3.5 w-3.5" /></Link>} bodyClass="p-0">
           {recent.length === 0 ? (
             <Empty icon={<History className="h-5 w-5" />} title="Belum ada riwayat">
@@ -138,7 +138,7 @@ export default function Dashboard() {
       </section>
 
       {entries.length > 0 && (
-        <section className="grid gap-6 lg:grid-cols-2">
+        <section className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <Card title="Aktivitas 14 hari terakhir" subtitle="Jumlah analisis yang disimpan per hari">
             <SimpleBar data={stats.days} x="day" y="count" label="Analisis" highlight={(r) => Number(r.count) > 0} height={220} />
           </Card>

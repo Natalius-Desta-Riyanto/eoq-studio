@@ -95,7 +95,7 @@ function ThemeSwitch() {
 function Toaster() {
   const { toasts, dismiss } = useToast();
   return (
-    <div className="no-print pointer-events-none fixed bottom-4 right-4 z-[60] flex w-80 flex-col gap-2">
+    <div className="no-print pointer-events-none fixed inset-x-4 top-16 z-[60] flex flex-col gap-2 sm:inset-x-auto sm:bottom-4 sm:right-4 sm:top-auto sm:w-80">
       {toasts.map((t) => {
         const Icon = t.tone === 'success' ? CircleCheck : t.tone === 'error' ? CircleAlert : Info;
         return (
@@ -154,7 +154,7 @@ export default function Layout() {
           </nav>
           <div className="ml-auto flex items-center gap-1"><ThemeSwitch /></div>
         </header>
-        <main className="print-full mx-auto max-w-[1400px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+        <main className="print-full mx-auto max-w-[1400px] px-4 pb-24 pt-5 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
           <Outlet />
         </main>
       </div>

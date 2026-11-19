@@ -64,7 +64,7 @@ export default function ComparePage() {
         <h1 className="text-xl font-semibold tracking-tight">Bandingkan skenario</h1>
         <p className="mt-1 text-sm text-slate-500">Pilih model, lalu centang hingga 6 analisis tersimpan untuk dibandingkan berdampingan.</p>
       </div>
-      <div className="grid gap-6 xl:grid-cols-[320px_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[320px_minmax(0,1fr)]">
         <Card title="Pilih analisis" bodyClass="space-y-3">
           <SelectField<ModelKind> label="Model" value={kind} onChange={setKind}
             options={MODELS.map((m) => ({ value: m.kind, label: `${m.name} (${entries.filter((e) => e.kind === m.kind).length})` }))} />

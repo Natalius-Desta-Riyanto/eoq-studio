@@ -89,11 +89,11 @@ export default function ValidityPage() {
 
             <Tabs<Tab> value={tab} onChange={setTab} tabs={[
               { value: 'summary', label: 'Data & grafik', icon: <ChartColumn className="h-4 w-4" /> },
-              { value: 'steps', label: 'Langkah penyelesaian', icon: <ListOrdered className="h-4 w-4" /> },
+              { value: 'steps', label: 'Langkah penyelesaian', short: 'Langkah', icon: <ListOrdered className="h-4 w-4" /> },
             ]} />
 
             {tab === 'summary' && (
-              <div className="grid gap-6 2xl:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
+              <div className="grid grid-cols-1 gap-6 2xl:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
                 <Card title={`Permintaan per ${label.toLowerCase()}`} subtitle="Garis putus-putus = rata-rata d̄">
                   <div style={{ height: 280 }}>
                     <ResponsiveContainer>
@@ -126,7 +126,7 @@ export default function ValidityPage() {
                   </div>
                 </Card>
                 <Card title="Statistik" className="lg:col-span-2">
-                  <div className="grid gap-6 md:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <KV rows={[
                       { label: 'n', value: r.n },
                       { label: 'Rata-rata d̄', value: f.num(r.mean) },

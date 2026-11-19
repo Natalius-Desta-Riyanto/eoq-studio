@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
 import {
-  BookOpen, ChevronDown, Copy, FileSpreadsheet, Printer, RotateCcw, Save, Sparkles, CircleAlert,
+  ArrowDown, BookOpen, ChevronDown, Copy, FileSpreadsheet, Printer, RotateCcw, Save, Sparkles, CircleAlert,
 } from 'lucide-react';
 import type { FieldErrors, ModelKind, Step } from '@/lib/models/common';
 import { PRESETS_BY_KIND, type Preset } from '@/data/presets';
@@ -80,30 +80,39 @@ export function ModelHeader<I>({ kind, presets, onPreset, onReset, source }: {
 }) {
   const meta = modelByKind(kind);
   const [open, setOpen] = useState(false);
+  const [alignRight, setAlignRight] = useState(true);
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const toggle = () => {
+    const r = btnRef.current?.getBoundingClientRect();
+    // Buka ke arah yang masih muat di layar (penting di ponsel)
+    if (r) setAlignRight(r.right - 320 >= 8);
+    setOpen((o) => !o);
+  };
   const Icon = meta.icon;
   return (
-    <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
-      <div className="flex min-w-0 items-start gap-3.5">
-        <div className="rounded-xl bg-brand-600 p-2.5 text-white shadow-sm shadow-brand-600/30"><Icon className="h-5 w-5" /></div>
+    <div className="mb-5 flex flex-wrap items-start justify-between gap-3 sm:mb-6 sm:gap-4">
+      <div className="flex min-w-0 items-start gap-3 sm:gap-3.5">
+        <div className="shrink-0 rounded-xl bg-brand-600 p-2 text-white shadow-sm shadow-brand-600/30 sm:p-2.5"><Icon className="h-5 w-5" /></div>
         <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-xl font-semibold tracking-tight">{meta.name}</h1>
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <h1 className="text-lg font-semibold tracking-tight sm:text-xl">{meta.name}</h1>
             <Badge tone="blue">Subbab {meta.section}</Badge>
             {source?.type === 'history' && <Badge tone="green">Dari riwayat: {source.title}</Badge>}
             {source?.type === 'preset' && <Badge tone="amber">{source.name}</Badge>}
           </div>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{meta.description}</p>
+          <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400 sm:text-sm">{meta.description}</p>
         </div>
       </div>
-      <div className="no-print flex items-center gap-2">
-        <div className="relative">
-          <button className="btn-secondary" onClick={() => setOpen((o) => !o)} aria-expanded={open}>
+      <div className="no-print flex w-full items-center gap-2 sm:w-auto">
+        <div className="relative flex-1 sm:flex-none">
+          <button ref={btnRef} className="btn-secondary w-full sm:w-auto" onClick={toggle} aria-expanded={open}>
             <Sparkles className="h-4 w-4 text-amber-500" /> Contoh soal <ChevronDown className="h-4 w-4 opacity-60" />
           </button>
           {open && (
             <>
               <div className="fixed inset-0 z-30" onClick={() => setOpen(false)} />
-              <div className="absolute right-0 z-40 mt-2 w-80 overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl dark:border-slate-700 dark:bg-slate-900">
+              <div className={clsx('absolute z-40 mt-2 w-[min(20rem,calc(100vw-2rem))] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-900', alignRight ? 'right-0' : 'left-0')}>
+                <div className="max-h-[60vh] overflow-y-auto p-1.5">
                 {presets.map((p) => (
                   <button key={p.id} className="block w-full rounded-lg px-3 py-2 text-left hover:bg-slate-100 dark:hover:bg-slate-800"
                     onClick={() => { onPreset(p); setOpen(false); }}>
@@ -114,6 +123,7 @@ export function ModelHeader<I>({ kind, presets, onPreset, onReset, source }: {
                     <span className="mt-0.5 block text-xs text-slate-500 dark:text-slate-400">{p.description}</span>
                   </button>
                 ))}
+                </div>
               </div>
             </>
           )}
@@ -158,16 +168,18 @@ export function ResultActions<I>({ kind, input, source, setSource, defaultTitle,
 
   return (
     <>
-      <div className="no-print flex flex-wrap items-center gap-2">
+      <div className="no-print grid grid-cols-4 gap-2 sm:flex sm:flex-wrap sm:items-center [&>button]:max-sm:flex-col [&>button]:max-sm:gap-1 [&>button]:max-sm:px-1 [&>button]:max-sm:py-2 [&>button]:max-sm:text-xs">
         <button className="btn-primary" onClick={openSave} disabled={disabled}><Save className="h-4 w-4" /> Simpan</button>
         <button className="btn-secondary" disabled={disabled}
           onClick={() => { downloadCsv(`${slug(meta.name)}-${stamp()}.csv`, csv()); toast('File CSV diunduh.'); }}>
           <FileSpreadsheet className="h-4 w-4" /> CSV
         </button>
-        <button className="btn-secondary" disabled={disabled} onClick={() => window.print()}><Printer className="h-4 w-4" /> Cetak / PDF</button>
-        <button className="btn-ghost" disabled={disabled}
+        <button className="btn-secondary" disabled={disabled} onClick={() => window.print()}>
+          <Printer className="h-4 w-4" /> <span className="sm:hidden">Cetak</span><span className="hidden sm:inline">Cetak / PDF</span>
+        </button>
+        <button className="btn-secondary sm:btn-ghost sm:border-0 sm:bg-transparent sm:shadow-none" disabled={disabled}
           onClick={async () => { try { await navigator.clipboard.writeText(summary()); toast('Ringkasan disalin.'); } catch { toast('Clipboard tidak tersedia.', 'error'); } }}>
-          <Copy className="h-4 w-4" /> Salin ringkasan
+          <Copy className="h-4 w-4" /> <span className="sm:hidden">Salin</span><span className="hidden sm:inline">Salin ringkasan</span>
         </button>
       </div>
       <Modal open={open} onClose={() => setOpen(false)} title={existing ? 'Simpan perubahan' : 'Simpan ke riwayat'}
@@ -193,7 +205,7 @@ export function StepsPanel({ steps }: { steps: Step[] }) {
   return (
     <ol className="space-y-4">
       {steps.map((s, k) => (
-        <li key={k} className="relative flex gap-4">
+        <li key={k} className="relative flex gap-3 sm:gap-4">
           <div className="flex flex-col items-center">
             <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-600 text-xs font-semibold text-white">{k + 1}</span>
             {k < steps.length - 1 && <span className="mt-1 w-px flex-1 bg-slate-200 dark:bg-slate-800" />}
@@ -202,7 +214,7 @@ export function StepsPanel({ steps }: { steps: Step[] }) {
             <p className="font-medium">{s.title}</p>
             {s.text && <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">{s.text}</p>}
             {s.tex && (
-              <div className="mt-2 overflow-x-auto rounded-lg border border-slate-100 bg-slate-50/70 px-4 py-2 dark:border-slate-800 dark:bg-slate-950/50">
+              <div className="mt-2 overflow-x-auto rounded-lg border border-slate-100 bg-slate-50/70 px-3 py-2 text-[0.85em] sm:px-4 sm:text-base dark:border-slate-800 dark:bg-slate-950/50">
                 <Tex block>{s.tex}</Tex>
               </div>
             )}
@@ -215,10 +227,42 @@ export function StepsPanel({ steps }: { steps: Step[] }) {
 
 /* ---------- Layout ---------- */
 export function ModelLayout({ inputs, results }: { inputs: ReactNode; results: ReactNode }) {
+  const resultsRef = useRef<HTMLDivElement>(null);
+  const [showJump, setShowJump] = useState(false);
+
+  // Di layar kecil input dan hasil bertumpuk: tampilkan tombol mengambang "Lihat hasil"
+  // selama bagian hasil belum terlihat.
+  useEffect(() => {
+    const el = resultsRef.current;
+    if (!el) return;
+    const mq = window.matchMedia('(max-width: 1279px)');
+    const update = () => {
+      if (!mq.matches) return setShowJump(false);
+      setShowJump(el.getBoundingClientRect().top > window.innerHeight - 40);
+    };
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    mq.addEventListener('change', update);
+    return () => {
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+      mq.removeEventListener('change', update);
+    };
+  }, []);
+
   return (
-    <div className="grid gap-6 xl:grid-cols-[380px_minmax(0,1fr)]">
-      <aside className="no-print xl:sticky xl:top-20 xl:self-start">{inputs}</aside>
-      <div className="min-w-0 space-y-6">{results}</div>
+    <div className="grid grid-cols-1 gap-5 sm:gap-6 xl:grid-cols-[380px_minmax(0,1fr)]">
+      <aside className="no-print min-w-0 xl:sticky xl:top-20 xl:self-start">{inputs}</aside>
+      <div ref={resultsRef} className="min-w-0 scroll-mt-16 space-y-5 sm:space-y-6">{results}</div>
+      {showJump && (
+        <button
+          className="no-print fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-1/2 z-30 inline-flex -translate-x-1/2 items-center gap-2 rounded-full bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand-900/30 transition hover:bg-brand-700 xl:hidden"
+          onClick={() => resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+        >
+          Lihat hasil <ArrowDown className="h-4 w-4" />
+        </button>
+      )}
     </div>
   );
 }
@@ -226,13 +270,13 @@ export function ModelLayout({ inputs, results }: { inputs: ReactNode; results: R
 export function InputCard({ children, formula }: { children: ReactNode; formula?: string }) {
   return (
     <div className="card">
-      <div className="flex items-center justify-between border-b border-slate-100 px-5 py-3.5 dark:border-slate-800">
+      <div className="flex items-center justify-between gap-2 border-b border-slate-100 px-4 py-3 dark:border-slate-800 sm:px-5 sm:py-3.5">
         <h2 className="text-[15px] font-semibold">Parameter input</h2>
         <span className="text-xs text-slate-400">Hasil diperbarui otomatis</span>
       </div>
-      <div className="space-y-4 p-5">{children}</div>
+      <div className="space-y-4 p-4 sm:p-5">{children}</div>
       {formula && (
-        <div className="flex items-center gap-2 border-t border-slate-100 bg-slate-50/60 px-5 py-3 text-slate-600 dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-300">
+        <div className="flex items-center gap-2 border-t border-slate-100 bg-slate-50/60 px-4 py-3 sm:px-5 text-slate-600 dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-300">
           <BookOpen className="h-4 w-4 shrink-0 text-slate-400" />
           <div className="min-w-0 overflow-x-auto"><Tex>{formula}</Tex></div>
         </div>

@@ -19,7 +19,7 @@ const SECTIONS: Section[] = [
     id: 'pengantar', no: '15.1', title: 'Pengantar model persediaan', body: (
       <>
         <P>Persediaan disimpan agar permintaan dapat dipenuhi tepat waktu. Dua keputusan utama: <b>kapan memesan</b> (reorder point) dan <b>berapa banyak memesan</b> (order quantity). Model pada bab ini deterministik — permintaan diketahui dan tidak acak.</P>
-        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
           {[
             ['Biaya pesan / setup K', 'Biaya tetap setiap pesanan atau setiap persiapan produksi (administrasi, dokumen, penyiapan mesin).'],
             ['Biaya pembelian p', 'Biaya variabel per unit; biaya pembelian tahunan = pD bila harga konstan.'],
@@ -115,7 +115,7 @@ const SECTIONS: Section[] = [
 
 export default function TheoryPage() {
   return (
-    <div className="grid gap-8 lg:grid-cols-[220px_minmax(0,1fr)]">
+    <div className="grid grid-cols-1 gap-8 lg:grid-cols-[220px_minmax(0,1fr)]">
       <nav className="no-print hidden lg:block">
         <div className="sticky top-20 space-y-1 text-sm">
           <p className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Daftar isi</p>

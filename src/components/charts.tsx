@@ -1,9 +1,23 @@
-import type { ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import {
   Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, ReferenceDot, ReferenceLine,
   ResponsiveContainer, Tooltip, XAxis, YAxis, type TooltipProps,
 } from 'recharts';
 import { useFormatter } from '@/lib/format';
+
+/** true untuk layar sempit (< 640px): grafik memakai margin, sumbu, dan legenda yang lebih ringkas. */
+export function useNarrow(bp = 640) {
+  const q = `(max-width: ${bp - 1}px)`;
+  const [narrow, setNarrow] = useState(() => typeof window !== 'undefined' && window.matchMedia(q).matches);
+  useEffect(() => {
+    const mq = window.matchMedia(q);
+    const h = () => setNarrow(mq.matches);
+    h();
+    mq.addEventListener('change', h);
+    return () => mq.removeEventListener('change', h);
+  }, [q]);
+  return narrow;
+}
 
 export const SERIES = Array.from({ length: 8 }, (_, k) => `var(--series-${k + 1})`);
 
@@ -63,27 +77,31 @@ export function CurveChart({ data, x, series, xLabel, yLabel, optimum, height = 
   refLines?: { x: number; label: string }[]; yDomain?: [number | string, number | string];
 }) {
   const f = useFormatter();
+  const narrow = useNarrow();
   const vf = (n: number) => (money ? f.money(n) : f.num(n));
+  const legendItems = series.filter((s) => !s.hideInLegend);
+  const h = narrow ? Math.min(height, 260) + (legendItems.length > 1 ? 24 * Math.ceil(legendItems.length / 2) : 0) : height;
   return (
-    <ChartFrame height={height}>
+    <ChartFrame height={h}>
       <ResponsiveContainer>
-        <LineChart data={data} margin={{ top: 16, right: 18, bottom: 22, left: 8 }}>
+        <LineChart data={data} margin={narrow ? { top: 12, right: 8, bottom: 18, left: -8 } : { top: 16, right: 18, bottom: 22, left: 8 }}>
           <CartesianGrid stroke="var(--chart-grid)" strokeDasharray="0" vertical={false} />
           <XAxis
-            dataKey={x} type="number" domain={['dataMin', 'dataMax']} tickLine={false}
+            dataKey={x} type="number" domain={['dataMin', 'dataMax']} tickLine={false} minTickGap={narrow ? 24 : 5}
             axisLine={{ stroke: 'var(--chart-axis)' }} tickFormatter={(v) => compact(v, f.locale)}
             label={{ value: xLabel, position: 'insideBottom', offset: -12, fill: 'var(--chart-muted)', fontSize: 12 }}
           />
           <YAxis
-            tickLine={false} axisLine={false} width={64} tickFormatter={(v) => compact(v, f.locale)} domain={yDomain ?? ['auto', 'auto']}
-            label={yLabel ? { value: yLabel, angle: -90, position: 'insideLeft', fill: 'var(--chart-muted)', fontSize: 12, dx: 2, dy: 30 } : undefined}
+            tickLine={false} axisLine={false} width={narrow ? 48 : 64} tickFormatter={(v) => compact(v, f.locale)} domain={yDomain ?? ['auto', 'auto']}
+            label={yLabel && !narrow ? { value: yLabel, angle: -90, position: 'insideLeft', fill: 'var(--chart-muted)', fontSize: 12, dx: 2, dy: 30 } : undefined}
           />
           <Tooltip
             cursor={{ stroke: 'var(--chart-axis)', strokeWidth: 1 }}
             content={<ChartTooltip xLabel={xLabel} valueFmt={vf} xFmt={(n) => f.num(n)} />}
           />
-          <Legend verticalAlign="top" align="right" height={28} iconType="plainline" iconSize={16}
-            payload={series.filter((s) => !s.hideInLegend).map((s, k) => ({
+          <Legend verticalAlign={narrow ? 'bottom' : 'top'} align={narrow ? 'left' : 'right'} height={narrow ? undefined : 28} iconType="plainline" iconSize={16}
+            wrapperStyle={narrow ? { paddingTop: 22, fontSize: 12, lineHeight: '18px' } : undefined}
+            payload={legendItems.map((s, k) => ({
               value: s.label, type: 'plainline', color: s.color ?? SERIES[k], id: s.key,
               payload: { strokeDasharray: s.dashed ? '5 4' : '0' } as never,
             }))}
@@ -119,11 +137,12 @@ export function InventoryChart({ data, height = 260, refs = [], xLabel = 'Waktu'
   xLabel?: string; unitLabel?: string; negative?: boolean;
 }) {
   const f = useFormatter();
+  const narrow = useNarrow();
   const axis = niceAxis(Math.min(0, ...data.map((d) => d.I)), Math.max(...data.map((d) => d.I), ...refs.map((r) => r.y)));
   return (
-    <ChartFrame height={height}>
+    <ChartFrame height={narrow ? Math.min(height, 230) : height}>
       <ResponsiveContainer>
-        <AreaChart data={data} margin={{ top: 16, right: 18, bottom: 22, left: 8 }}>
+        <AreaChart data={data} margin={narrow ? { top: 12, right: 8, bottom: 18, left: -8 } : { top: 16, right: 18, bottom: 22, left: 8 }}>
           <defs>
             <linearGradient id="invFill" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="var(--series-1)" stopOpacity={0.28} />
@@ -131,10 +150,10 @@ export function InventoryChart({ data, height = 260, refs = [], xLabel = 'Waktu'
             </linearGradient>
           </defs>
           <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
-          <XAxis dataKey="t" type="number" domain={['dataMin', 'dataMax']} tickLine={false} axisLine={{ stroke: 'var(--chart-axis)' }}
+          <XAxis dataKey="t" type="number" domain={['dataMin', 'dataMax']} tickLine={false} axisLine={{ stroke: 'var(--chart-axis)' }} minTickGap={narrow ? 24 : 5}
             tickFormatter={(v) => f.num(v, 3)}
             label={{ value: xLabel, position: 'insideBottom', offset: -12, fill: 'var(--chart-muted)', fontSize: 12 }} />
-          <YAxis tickLine={false} axisLine={false} width={56} tickFormatter={(v) => compact(v, f.locale)}
+          <YAxis tickLine={false} axisLine={false} width={narrow ? 44 : 56} tickFormatter={(v) => compact(v, f.locale)}
             domain={[axis.lo, axis.hi]} ticks={axis.ticks} />
           <Tooltip content={<ChartTooltip xLabel="t" valueFmt={(n) => `${f.num(n)} ${unitLabel}`} xFmt={(n) => f.num(n, 4)} />} />
           {negative && <ReferenceLine y={0} stroke="var(--chart-axis)" />}
@@ -155,6 +174,7 @@ export function SimpleBar({ data, x, y, height = 240, money = false, highlight, 
   label: string; colorFor?: (row: Record<string, number | string>, k: number) => string; horizontal?: boolean;
 }) {
   const f = useFormatter();
+  const narrow = useNarrow();
   const vf = (n: number) => (money ? f.money(n) : f.num(n));
   return (
     <ChartFrame height={height}>
@@ -164,12 +184,12 @@ export function SimpleBar({ data, x, y, height = 240, money = false, highlight, 
           {horizontal ? (
             <>
               <XAxis type="number" tickLine={false} axisLine={false} tickFormatter={(v) => compact(v, f.locale)} allowDecimals={false} />
-              <YAxis type="category" dataKey={x} tickLine={false} axisLine={{ stroke: 'var(--chart-axis)' }} width={110} />
+              <YAxis type="category" dataKey={x} tickLine={false} axisLine={{ stroke: 'var(--chart-axis)' }} width={narrow ? 84 : 110} />
             </>
           ) : (
             <>
-              <XAxis dataKey={x} tickLine={false} axisLine={{ stroke: 'var(--chart-axis)' }} interval={0} />
-              <YAxis tickLine={false} axisLine={false} width={56} tickFormatter={(v) => compact(v, f.locale)} allowDecimals={false} />
+              <XAxis dataKey={x} tickLine={false} axisLine={{ stroke: 'var(--chart-axis)' }} interval={narrow ? 'preserveStartEnd' : 0} />
+              <YAxis tickLine={false} axisLine={false} width={narrow ? 40 : 56} tickFormatter={(v) => compact(v, f.locale)} allowDecimals={false} />
             </>
           )}
           <Tooltip cursor={{ fill: 'var(--chart-grid)', opacity: 0.5 }}

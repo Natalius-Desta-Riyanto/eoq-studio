@@ -56,11 +56,11 @@ export default function BackorderPage() {
             <Tabs<Tab> value={tab} onChange={setTab} tabs={[
               { value: 'summary', label: 'Ringkasan', icon: <Sigma className="h-4 w-4" /> },
               { value: 'charts', label: 'Grafik', icon: <ChartLine className="h-4 w-4" /> },
-              { value: 'steps', label: 'Langkah penyelesaian', icon: <ListOrdered className="h-4 w-4" /> },
+              { value: 'steps', label: 'Langkah penyelesaian', short: 'Langkah', icon: <ListOrdered className="h-4 w-4" /> },
             ]} />
 
             {tab === 'summary' && (
-              <div className="grid gap-6 lg:grid-cols-2">
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <Card title="Kebijakan optimal">
                   <KV rows={[
                     { label: 'Biaya simpan h', value: f.money(r.h) },
@@ -90,7 +90,7 @@ export default function BackorderPage() {
             )}
 
             {tab === 'charts' && (
-              <div className="grid gap-6">
+              <div className="grid grid-cols-1 gap-6">
                 <Card title="Pola persediaan dengan back order" subtitle="Nilai negatif = permintaan yang tertunda (backlog)">
                   <InventoryChart data={r.inventory} xLabel="Waktu (tahun)" negative
                     refs={[{ y: r.M, label: `M* = ${f.num(r.M)}` }, { y: -r.shortage, label: `−(q*−M*) = −${f.num(r.shortage)}`, tone: 'warn' }]} />

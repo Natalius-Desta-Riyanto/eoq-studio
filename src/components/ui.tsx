@@ -12,15 +12,15 @@ export function Card({ title, subtitle, actions, children, className, bodyClass 
   return (
     <section className={clsx('card', className)}>
       {(title || actions) && (
-        <header className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 px-5 py-3.5 dark:border-slate-800">
+        <header className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 px-4 py-3 dark:border-slate-800 sm:px-5 sm:py-3.5">
           <div className="min-w-0">
             {title && <h3 className="text-[15px] font-semibold text-slate-900 dark:text-white">{title}</h3>}
             {subtitle && <p className="mt-0.5 text-[13px] text-slate-500 dark:text-slate-400">{subtitle}</p>}
           </div>
-          {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
+          {actions && <div className="flex min-w-0 max-w-full shrink-0 items-center gap-2">{actions}</div>}
         </header>
       )}
-      <div className={clsx('p-5', bodyClass)}>{children}</div>
+      <div className={clsx(!(bodyClass && /(^|\s)p-\d/.test(bodyClass)) && 'p-4 sm:p-5', bodyClass)}>{children}</div>
     </section>
   );
 }
@@ -69,7 +69,7 @@ export function NumberField({ label, value, onChange, unit, hint, error, symbol,
           id={id}
           inputMode="decimal"
           autoComplete="off"
-          className={clsx('input pr-16 font-medium tabular-nums', error && 'input-error')}
+          className={clsx('input font-medium tabular-nums', unit ? 'pr-16' : 'pr-3', error && 'input-error')}
           value={text}
           onChange={(e) => commit(e.target.value)}
           onKeyDown={(e) => {
@@ -127,7 +127,7 @@ export function Segmented<T extends string>({ value, onChange, options, size = '
   value: T; onChange: (v: T) => void; options: { value: T; label: ReactNode }[]; size?: 'sm' | 'md'; className?: string;
 }) {
   return (
-    <div role="tablist" className={clsx('inline-flex rounded-lg bg-slate-100 p-1 dark:bg-slate-800/80', className)}>
+    <div role="tablist" className={clsx('no-scrollbar inline-flex max-w-full overflow-x-auto rounded-lg bg-slate-100 p-1 dark:bg-slate-800/80', className)}>
       {options.map((o) => (
         <button
           key={o.value}
@@ -136,7 +136,7 @@ export function Segmented<T extends string>({ value, onChange, options, size = '
           aria-selected={value === o.value}
           onClick={() => onChange(o.value)}
           className={clsx(
-            'rounded-md font-medium transition',
+            'shrink-0 whitespace-nowrap rounded-md font-medium transition',
             size === 'sm' ? 'px-2.5 py-1 text-xs' : 'px-3 py-1.5 text-[13px]',
             value === o.value
               ? 'bg-white text-slate-900 shadow-sm dark:bg-slate-950 dark:text-white'
@@ -152,10 +152,10 @@ export function Segmented<T extends string>({ value, onChange, options, size = '
 
 /* ---------- Tabs ---------- */
 export function Tabs<T extends string>({ tabs, value, onChange }: {
-  tabs: { value: T; label: ReactNode; icon?: ReactNode }[]; value: T; onChange: (v: T) => void;
+  tabs: { value: T; label: ReactNode; short?: ReactNode; icon?: ReactNode }[]; value: T; onChange: (v: T) => void;
 }) {
   return (
-    <div role="tablist" className="no-print flex gap-1 overflow-x-auto border-b border-slate-200 dark:border-slate-800">
+    <div role="tablist" className="no-print no-scrollbar -mx-4 flex gap-1 overflow-x-auto border-b border-slate-200 px-4 dark:border-slate-800 sm:mx-0 sm:px-0">
       {tabs.map((t) => (
         <button
           key={t.value}
@@ -163,13 +163,14 @@ export function Tabs<T extends string>({ tabs, value, onChange }: {
           aria-selected={value === t.value}
           onClick={() => onChange(t.value)}
           className={clsx(
-            '-mb-px inline-flex items-center gap-2 whitespace-nowrap border-b-2 px-3.5 py-2.5 text-sm font-medium transition',
+            '-mb-px inline-flex shrink-0 items-center gap-2 whitespace-nowrap border-b-2 px-3 py-2.5 text-sm font-medium transition sm:px-3.5',
             value === t.value
               ? 'border-brand-600 text-brand-700 dark:border-brand-400 dark:text-brand-300'
               : 'border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200',
           )}
         >
-          {t.icon}{t.label}
+          <span className="hidden sm:inline-flex">{t.icon}</span>
+          {t.short ? <><span className="sm:hidden">{t.short}</span><span className="hidden sm:inline">{t.label}</span></> : t.label}
         </button>
       ))}
     </div>
@@ -186,8 +187,8 @@ const badgeTone = {
 };
 export function Badge({ tone = 'gray', children, className }: { tone?: keyof typeof badgeTone; children: ReactNode; className?: string }) {
   return (
-    <span className={clsx('inline-flex items-center gap-1 whitespace-nowrap rounded-md px-2 py-0.5 text-xs font-medium ring-1 ring-inset', badgeTone[tone], className)}>
-      {children}
+    <span className={clsx('inline-flex max-w-full items-center gap-1 whitespace-nowrap rounded-md px-2 py-0.5 text-xs font-medium ring-1 ring-inset', badgeTone[tone], className)}>
+      {typeof children === 'string' ? <span className="truncate">{children}</span> : children}
     </span>
   );
 }
@@ -233,16 +234,16 @@ export function Stat({ label, value, sub, accent, icon }: {
 }) {
   return (
     <div className={clsx(
-      'rounded-xl border p-4',
+      'min-w-0 rounded-xl border p-3.5 sm:p-4',
       accent
         ? 'border-brand-200 bg-gradient-to-br from-brand-50 to-white dark:border-brand-900 dark:from-brand-950/70 dark:to-slate-900'
         : 'border-slate-200/80 bg-white dark:border-slate-800 dark:bg-slate-900',
     )}>
       <div className="flex items-center justify-between gap-2">
-        <p className="text-[12px] font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{label}</p>
+        <p className="text-[11px] font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400 sm:text-[12px]">{label}</p>
         {icon && <span className="text-slate-400">{icon}</span>}
       </div>
-      <p className={clsx('mt-1.5 truncate text-[22px] font-semibold tabular-nums tracking-tight', accent ? 'text-brand-700 dark:text-brand-300' : 'text-slate-900 dark:text-white')}>
+      <p className={clsx('mt-1.5 truncate text-lg font-semibold sm:text-[22px] tabular-nums tracking-tight', accent ? 'text-brand-700 dark:text-brand-300' : 'text-slate-900 dark:text-white')}>
         {value}
       </p>
       {sub && <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">{sub}</p>}
@@ -263,7 +264,7 @@ export function KV({ rows }: { rows: { label: ReactNode; value: ReactNode; stron
   return (
     <dl className="divide-y divide-slate-100 text-sm dark:divide-slate-800">
       {rows.map((r, k) => (
-        <div key={k} className="flex items-baseline justify-between gap-4 py-2">
+        <div key={k} className="flex items-baseline justify-between gap-3 py-2">
           <dt className="text-slate-500 dark:text-slate-400">{r.label}</dt>
           <dd className={clsx('text-right tabular-nums', r.strong ? 'font-semibold text-slate-900 dark:text-white' : 'text-slate-800 dark:text-slate-200')}>{r.value}</dd>
         </div>
@@ -284,15 +285,15 @@ export function Modal({ open, onClose, title, children, footer, wide }: {
   }, [open, onClose]);
   if (!open) return null;
   return (
-    <div className="no-print fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true">
+    <div className="no-print fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-4" role="dialog" aria-modal="true">
       <div className="absolute inset-0 bg-slate-950/40 backdrop-blur-[2px]" onClick={onClose} />
-      <div className={clsx('relative w-full rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-slate-800 dark:bg-slate-900', wide ? 'max-w-3xl' : 'max-w-md')}>
+      <div className={clsx('relative w-full rounded-t-2xl border sm:rounded-2xl border-slate-200 bg-white shadow-2xl dark:border-slate-800 dark:bg-slate-900', wide ? 'max-w-3xl' : 'max-w-md')}>
         <div className="flex items-center justify-between border-b border-slate-100 px-5 py-3.5 dark:border-slate-800">
           <h2 className="text-base font-semibold">{title}</h2>
           <button className="btn-ghost btn-sm -mr-2" onClick={onClose} aria-label="Tutup"><X className="h-4 w-4" /></button>
         </div>
-        <div className="max-h-[70vh] overflow-y-auto px-5 py-4">{children}</div>
-        {footer && <div className="flex justify-end gap-2 border-t border-slate-100 px-5 py-3 dark:border-slate-800">{footer}</div>}
+        <div className="max-h-[65vh] overflow-y-auto px-5 py-4 sm:max-h-[70vh]">{children}</div>
+        {footer && <div className="flex flex-wrap justify-end gap-2 border-t pb-[max(0.75rem,env(safe-area-inset-bottom))] border-slate-100 px-5 pt-3 dark:border-slate-800">{footer}</div>}
       </div>
     </div>
   );

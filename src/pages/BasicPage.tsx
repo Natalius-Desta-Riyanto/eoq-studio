@@ -69,13 +69,13 @@ export default function BasicPage() {
             <Tabs<Tab> value={tab} onChange={setTab} tabs={[
               { value: 'summary', label: 'Ringkasan', icon: <Sigma className="h-4 w-4" /> },
               { value: 'charts', label: 'Grafik', icon: <ChartLine className="h-4 w-4" /> },
-              { value: 'steps', label: 'Langkah penyelesaian', icon: <ListOrdered className="h-4 w-4" /> },
+              { value: 'steps', label: 'Langkah penyelesaian', short: 'Langkah', icon: <ListOrdered className="h-4 w-4" /> },
               { value: 'table', label: 'Tabel biaya', icon: <Table2 className="h-4 w-4" /> },
               { value: 'sensitivity', label: 'Sensitivitas' },
             ]} />
 
             {tab === 'summary' && (
-              <div className="grid gap-6 lg:grid-cols-2">
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <Card title="Kebijakan optimal">
                   <KV rows={[
                     { label: 'Biaya simpan efektif h', value: `${f.money(r.h, 4)} /unit/${per}` },
@@ -117,7 +117,7 @@ export default function BasicPage() {
             )}
 
             {tab === 'charts' && (
-              <div className="grid gap-6">
+              <div className="grid grid-cols-1 gap-6">
                 <Card title="Kurva biaya terhadap kuantitas pesanan" subtitle="Biaya total minimum terjadi saat kurva simpan dan pesan berpotongan">
                   <CurveChart data={r.curve} x="q" xLabel="Kuantitas pesanan q" optimum={{ x: r.q, y: r.relevant }}
                     refLines={r.evaluation ? [{ x: r.evaluation.q, label: 'q pembanding' }] : []}

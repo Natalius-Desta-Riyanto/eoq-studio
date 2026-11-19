@@ -54,12 +54,12 @@ export default function ContinuousPage() {
             <Tabs<Tab> value={tab} onChange={setTab} tabs={[
               { value: 'summary', label: 'Ringkasan', icon: <Sigma className="h-4 w-4" /> },
               { value: 'charts', label: 'Grafik', icon: <ChartLine className="h-4 w-4" /> },
-              { value: 'steps', label: 'Langkah penyelesaian', icon: <ListOrdered className="h-4 w-4" /> },
-              { value: 'rate', label: 'Pengaruh laju r', icon: <Table2 className="h-4 w-4" /> },
+              { value: 'steps', label: 'Langkah penyelesaian', short: 'Langkah', icon: <ListOrdered className="h-4 w-4" /> },
+              { value: 'rate', label: 'Pengaruh laju r', short: 'Laju r', icon: <Table2 className="h-4 w-4" /> },
             ]} />
 
             {tab === 'summary' && (
-              <div className="grid gap-6 lg:grid-cols-2">
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <Card title="Kebijakan produksi">
                   <KV rows={[
                     { label: 'Biaya simpan h', value: f.money(r.h) },
@@ -88,7 +88,7 @@ export default function ContinuousPage() {
             )}
 
             {tab === 'charts' && (
-              <div className="grid gap-6">
+              <div className="grid grid-cols-1 gap-6">
                 <Card title="Pola persediaan I(t)" subtitle="Naik dengan laju r − D selama produksi, turun dengan laju D setelahnya">
                   <InventoryChart data={r.inventory} xLabel="Waktu (tahun)" refs={[{ y: r.Imax, label: `Imax = ${f.num(r.Imax)}` }]} />
                 </Card>

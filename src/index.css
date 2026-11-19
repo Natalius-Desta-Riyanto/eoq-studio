@@ -47,7 +47,7 @@
 }
 
 @layer components {
-  .card { @apply rounded-xl border border-slate-200/80 bg-white shadow-card dark:border-slate-800 dark:bg-slate-900; }
+  .card { @apply min-w-0 rounded-xl border border-slate-200/80 bg-white shadow-card dark:border-slate-800 dark:bg-slate-900; }
   .card-pad { @apply p-5; }
   .label { @apply mb-1.5 block text-[13px] font-medium text-slate-700 dark:text-slate-300; }
   .input {
@@ -68,6 +68,8 @@
   .table-base tr:last-child td { @apply border-b-0; }
   .table-compact th, .table-compact td { @apply px-2.5; }
   .num { @apply text-right tabular-nums; }
+  .no-scrollbar { scrollbar-width: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
   .kbd { @apply rounded border border-slate-300 bg-slate-100 px-1.5 py-0.5 font-mono text-[11px] dark:border-slate-700 dark:bg-slate-800; }
 }
 

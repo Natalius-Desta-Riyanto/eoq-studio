@@ -38,7 +38,7 @@ export default function SettingsPage() {
       </Card>
 
       <Card title="Format angka">
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <SelectField label="Format lokal" value={s.locale} onChange={(locale) => s.update({ locale })}
             options={[{ value: 'id-ID', label: 'Indonesia (1.234,56)' }, { value: 'en-US', label: 'Inggris (1,234.56)' }]} />
           <SelectField label="Mata uang" value={s.currency} onChange={(currency) => s.update({ currency })} options={CURRENCIES} />

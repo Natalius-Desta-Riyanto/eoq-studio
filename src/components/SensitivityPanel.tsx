@@ -32,7 +32,7 @@ export function SensitivityPanel({ input }: { input: BasicInput }) {
     <div className="space-y-6">
       <Card title="Analisis sensitivitas parameter" subtitle="Ubah satu parameter dari −50% sampai +50%, parameter lain tetap"
         actions={<Segmented<Param> size="sm" value={param} onChange={setParam} options={[{ value: 'D', label: 'D' }, { value: 'K', label: 'K' }, { value: 'h', label: 'h' }]} />}>
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <div>
             <p className="mb-1 text-sm font-medium">EOQ q* terhadap perubahan {LABEL[param]}</p>
             <CurveChart data={rows} x="change" xLabel="Perubahan parameter (%)" money={false} height={240}
